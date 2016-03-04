@@ -1,0 +1,58 @@
+Right.
+
+We're three posts in and I've yet to mention SQL at all. Time to rectify that!
+
+First a bit of background. We're currently migrating from an old SAN storage platform, to a shiny new exciting one. In fact I'm on a training course for the new one at the moment. Due to time factors, and other issues we've run into we're migrating our databases to the new platform by presenting new drives from the new platform, then moving the databses from the old one, one at a time.
+
+We started moving these using good 'ol attach and detatch. For databases without replication this is fine (despite the fact that sp_attach_db and sp_detatch_db are due to be deprecated), but if you have replication configured you won't be able to detatch the database without first dropping the replication. Now, if you're anything like me, I suspect you'd rather not have to go through the horror of having to script out a complex replication setup, then script it back in and spend a week fiddling with it to make it work right. If you're in that camp: Good news!
+
+Instead of detatching the database, you can simply move the files. Have you ever moved system databases? Well, it works in almost the same way.
+
+###Step 1
+Run the following:
+    sp_helpdb 'dbname'
+This should present you with some grid results. The one you want is the following:
+![Database Files]()
+In this example you can see my test database has one data and log file. Your database might have more, so make sure to address each file in the steps below.
+
+Make a note of the logical file names, the ones in the 'name' column, and the file location in the 'filename' column.
+
+###Step 2
+Run the follwing script:
+'''
+USE [master]
+GO
+ALTER DATABASE [dbname] SET  RESTRICTED_USER WITH ROLLBACK IMMEDIATE
+GO
+USE [dbname]
+GO
+ALTER DATABASE [dbname] MODIFY FILE (NAME= datafilename, FILENAME='c:\pathtonewfile\data.mdf')
+GO
+ALTER DATABASE [dbname] MODIFY FILE (NAME= logfilename, FILENAME='c:\pathtonewfile\log.ldf')
+GO
+USE [master]
+GO
+ALTER DATABASE [dbname] SET OFFLINE
+GO
+'''
+This will tell the database that its files have been moved and then set it offline. For completeness' sake, here's an example of one of the lines for my sample database:
+    ALTER DATABASE [Neiltest] MODIFY FILE (NAME= Neiltest, FILENAME='F:\sqldata\Neiltest.mdf')
+	ALTER DATABASE [Neiltest] MODIFY FILE (NAME= Neiltest_log, FILENAME='M:\sqllogs\Neiltest_log.ldf')
+
+###Step 3
+Copy your files to the new location. In my case I'm moving G:\SQLData\Neiltest.mdf to F:\sqldata and I:\SQLLogs\Neiltest_log.ldf to M:\sqllogs. I tend to copy the files to the new location and rename the old one, that way I can recover if there's any problems later on and verify that my database is looking at the files in the new location. 
+
+This step will result in the most downtime. If you have a large database to move in this way you need to anticipate the amount of time the files will take to copy between drives. If you have a system that requires minimal downtime this might not be the best solution.
+
+###Step 4
+Bring the database back online with the following:
+'''
+ALTER DATABASE [dbname] SET ONLINE
+GO
+ALTER DATABASE [dbname] SET MULTI_USER
+GO
+'''
+
+Once you've done this you can confirm that your database files are in the new location by running 'sp_helpdb' again. You can rev up replication monitor and check your current replication status as well which, hopefully, should be fine.
+
+Good luck!

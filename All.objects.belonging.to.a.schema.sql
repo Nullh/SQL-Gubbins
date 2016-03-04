@@ -1,0 +1,32 @@
+select sys.schemas.name, sys.objects.name , objType = 
+	CASE sys.objects.type
+		WHEN 'AF' THEN 'Aggregate function (CLR)'
+		WHEN 'C' THEN 'CHECK constraint'
+		WHEN 'D' THEN 'DEFAULT (constraint or stand-alone)'
+		WHEN 'F' THEN 'FOREIGN KEY constraint'
+		WHEN 'FN' THEN 'SQL scalar function'
+		WHEN 'FS' THEN 'Assembly (CLR) scalar-function'
+		WHEN 'FT' THEN 'Assembly (CLR) table-valued function'
+		WHEN 'IF' THEN 'SQL inline table-valued function'
+		WHEN 'IT' THEN 'Internal table'
+		WHEN 'P' THEN 'SQL Stored Procedure'
+		WHEN 'PC' THEN 'Assembly (CLR) stored-procedure'
+		WHEN 'PG' THEN 'Plan guide'
+		WHEN 'PK' THEN 'PRIMARY KEY constraint'
+		WHEN 'R' THEN 'Rule (old-style, stand-alone)'
+		WHEN 'RF' THEN 'Replication-filter-procedure'
+		WHEN 'S' THEN 'System base table'
+		WHEN 'SN' THEN 'Synonym'
+		WHEN 'SQ' THEN 'Service queue'
+		WHEN 'TA' THEN 'Assembly (CLR) DML trigger'
+		WHEN 'TF' THEN 'SQL table-valued-function'
+		WHEN 'TR' THEN 'SQL DML trigger'
+		WHEN 'TT' THEN 'Table type'
+		WHEN 'U' THEN 'Table (user-defined)'
+		WHEN 'UQ' THEN 'UNIQUE constraint'
+		WHEN 'V' THEN 'View'
+		WHEN 'X' THEN 'Extended stored procedure'
+	END
+from sys.objects
+inner join sys.schemas on (sys.schemas.schema_id = sys.objects.schema_id)
+where sys.schemas.name like 'sysdev9'
