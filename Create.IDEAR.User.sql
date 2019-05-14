@@ -12,7 +12,7 @@ GO
 CREATE TABLE ##temp
 	(id nvarchar(max))
 INSERT INTO ##temp
-	VALUES (N'71033624')       --<--<--
+	VALUES (N'<user>')       --<--<--
 DECLARE @id nvarchar(max)
 DECLARE @pass nvarchar(max)
 SET @id = (SELECT id FROM ##temp)

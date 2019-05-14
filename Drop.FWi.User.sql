@@ -9,7 +9,7 @@ SQL Account deleted.
 CREATE TABLE ##temp
 	(id nvarchar(max))
 INSERT INTO ##temp
-	VALUES (N'71039999')     --<--<--
+	VALUES (N'<user>')
 DECLARE @id nvarchar(max)
 SET @id = (SELECT id FROM ##temp)
 PRINT 'Deleting user '+@id

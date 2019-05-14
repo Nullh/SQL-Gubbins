@@ -12,11 +12,11 @@ GO
 CREATE TABLE ##temp
 	(id nvarchar(max))
 INSERT INTO ##temp
-	VALUES (N'71039999')       --<--<--
+	VALUES (N'<user>')       --<--<--
 DECLARE @id nvarchar(max)
 DECLARE @pass nvarchar(max)
 SET @id = (SELECT id FROM ##temp)
-SET @pass = N'Calico(72hj'     --<--<--
+SET @pass = N'<password>'     --<--<--
 
 PRINT 'Creating user '+@id
 

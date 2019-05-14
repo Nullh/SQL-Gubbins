@@ -13,7 +13,7 @@ from msdb..sysjobs as sj
 order by job_owner;
 
 select * from #Jobs 
-where job_owner like 'Derbyshire\A9360247'
-or job_owner like 'Derbyshire\A9361939';
+where job_owner like '<login>'
+or job_owner like '<login>';
 
 drop table #Jobs;

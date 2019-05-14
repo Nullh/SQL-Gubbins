@@ -24,7 +24,7 @@ N'<table border="1">' +
 	N'</table>';
 
 EXEC msdb.dbo.sp_send_dbmail
-	@recipients = 'neil.holmes@derbyshire.gov.uk',
+	@recipients = 'your@email.com',
 	@body = @table,
 	@body_format = 'HTML',
 	@subject = 'Errors Detected in Reports Repository';
